@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>星轨回声 · Genshin Elemental Echoes</title>
+<meta name="description" content="星轨回声 Genshin Elemental Echoes — 浏览器即开即玩的原神风原创动作肉鸽，包含三位觉醒角色、五尊王座 Boss、三十首随机配乐、百分制排行榜。">
+<meta property="og:title" content="星轨回声 · Genshin Elemental Echoes">
+<meta property="og:description" content="选择星轨契约，觉醒一位角色，斩落五尊王座。浏览器打开即可开战。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0718'/%3E%3Cpath d='M32 8 56 52H8Z' fill='none' stroke='%23e8d6ac' stroke-width='3'/%3E%3Cpath d='M32 24 40 44H24Z' fill='%23a9efff'/%3E%3C/svg%3E">
+<style>
+  :root{--bg:#07060f;--ink:#f3ead9;--gold:#e8d6ac;--ice:#a9efff;--violet:#cbb1ff;--dim:rgba(214,205,228,.64)}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(ellipse at 50% -10%,#221637,#0a0716 45%,#05040c);color:var(--ink);
+    font-family:"Noto Serif SC","Source Han Serif SC",Songti SC,serif;letter-spacing:.04em}
+  a{color:var(--ice);text-decoration:none}
+  .wrap{max-width:960px;margin:0 auto;padding:56px 24px 84px}
+  .kicker{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.44em;color:rgba(232,214,172,.55)}
+  h1{font-size:clamp(34px,6vw,62px);font-weight:400;letter-spacing:.2em;margin:14px 0 6px;
+    background:linear-gradient(100deg,#fff5e0,#e8d6ac 42%,#a9efff 78%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .en{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.4em;color:var(--violet)}
+  .lead{margin:22px 0 0;font-size:15px;line-height:2.05;color:var(--dim);max-width:44em}
+  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:28px;padding:13px 30px;border:1px solid rgba(255,226,168,.7);
+    background:linear-gradient(120deg,#e6cfa2,#fff2d2);color:#171326;font-size:15px;font-weight:700;letter-spacing:.2em;border-radius:2px}
+  .cta:hover{filter:brightness(1.06)}
+  .note{margin-top:12px;font-size:12px;color:rgba(190,181,206,.55)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:44px}
+  .card{padding:18px 18px 16px;border:1px solid rgba(232,214,172,.16);background:rgba(10,12,28,.62)}
+  .card h3{margin:0 0 8px;font-size:14px;font-weight:400;letter-spacing:.12em;color:#f7ecd6}
+  .card p{margin:0;font-size:12.5px;line-height:1.9;color:rgba(206,198,222,.66)}
+  h2.sec{margin:52px 0 0;font-size:13px;letter-spacing:.34em;color:rgba(232,214,172,.6);font-weight:400}
+  ol{margin:14px 0 0;padding-left:20px;font-size:13px;line-height:2.1;color:var(--dim)}
+  footer{margin-top:54px;padding-top:18px;border-top:1px solid rgba(232,214,172,.12);font-size:12px;line-height:1.9;color:rgba(180,172,197,.5)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">STAR RAIL ECHO · THE SEVENTH TIDE</div>
+  <h1>星轨回声</h1>
+  <div class="en">GENSHIN ELEMENTAL ECHOES</div>
+  <p class="lead">
+    深渊把七座王座沉入海沟，潮水每夜上涨一寸。你带着三种本源与一张星轨契约踏入星渊：
+    在四百种卡牌中做出抉择，觉醒一位角色，然后在五分钟里斩落五尊王座。
+    全部内容被打包成一个网页，打开就能玩，无需下载安装。
+  </p>
+  <a class="cta" href="./index.html">▶ 进入星渊 · PLAY</a>
+  <div class="note">推荐电脑端 Chrome / Edge · 支持键盘 WASD 与鼠标操作 · 首次点击后开始播放音乐</div>
+
+  <div class="grid">
+    <div class="card"><h3>三位觉醒角色</h3><p>桑多涅的贯星冰束与极星辉域、哥伦比娅的半屏黑洞、沃雅妮莎的水妖之歌，各自拥有独立的 E / Q 与被动。</p></div>
+    <div class="card"><h3>五尊王座 Boss</h3><p>吞潮巨粘的 66% / 33% 分裂、深渊激光眼的脱手激光、午夜钟表匠的三秒爆破、九头蛇的毒圈、深渊眷属的引力拉扯。</p></div>
+    <div class="card"><h3>即时深渊低语</h3><p>Boss 出场、释放机制与濒死时，屏幕底部以 0.025 秒/字浮现金色台词，排队播放、不打断战斗。</p></div>
+    <div class="card"><h3>三十首记忆点配乐</h3><p>每局随机一首主曲；基础 / 打击 / 旋律三层随战斗强度实时加权，全部内嵌，不依赖外链音频。</p></div>
+    <div class="card"><h3>潮线排行榜</h3><p>按通关时间排序、以计分作为同分基准；百名榜单、UUID 覆盖自己的旧记录，成绩保存在本机浏览器。</p></div>
+    <div class="card"><h3>可玩性硬底线</h3><p>选卡两步确认与防连点、物理快照哈希一致、单帧逻辑耗时上限 16.6ms，均为回归测试项。</p></div>
+  </div>
+
+  <h2 class="sec">操作</h2>
+  <ol>
+    <li>W A S D 移动，鼠标瞄准，按住左键攻击。</li>
+    <li>Q / E 释放觉醒技能，R 切换元素，P 暂停，C 图鉴。</li>
+    <li>升级时单击卡牌进入选中态，再点「确定」生效。</li>
+  </ol>
+
+  <footer>
+    本页面为个人同人作品，使用「原神 / Genshin」作为风格描述词，与 HoYoverse 米哈游无关，未使用其官方美术、音频或代码资源。<br>
+    存档基于浏览器 localStorage，换设备或清除站点数据后不会保留。
+  </footer>
+</div>
+</body>
+</html>
