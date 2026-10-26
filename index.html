@@ -11816,6 +11816,10 @@ const BGM_TRACKS = [
 
   function openLevelUp() {
     if (game.state !== 'fight') return;
+    // A newer level-up invalidates every timer from the previous card screen.
+    // Without this, the previous 200ms close timer can hide the new overlay
+    // while game.state stays 'levelup' -> the run looks frozen forever.
+    game.choiceToken = (game.choiceToken || 0) + 1;
     game.state = 'levelup';
     UI.enter('selecting', 'levelup-open');
     UI.lock(300);
@@ -12014,6 +12018,10 @@ const BGM_TRACKS = [
     if (game.selectedOption !== index) return false;
     if (game.choiceCommitting) return false;
     game.choiceCommitting = true;
+    // Each confirmation owns a generation. Any later level-up increments it,
+    // so stale close/apply timers become no-ops instead of pausing the run.
+    game.choiceToken = (game.choiceToken || 0) + 1;
+    const choiceTok = game.choiceToken;
     // State transition is synchronous; the expensive apply is one frame later
     // so the picked-card animation can paint before the main thread works.
     UI.begin('card-confirm', 'transitioning', 300);
@@ -12025,6 +12033,7 @@ const BGM_TRACKS = [
     cardEl.classList.add('picked');
     for (let i = 0; i < dom.choiceCards.length; i++) if (i !== index) dom.choiceCards[i].disabled = true;
     setTimeout(() => {
+      if (game.choiceToken !== choiceTok) return;
       game.picks.push({ id: o.id, type: o.type, mutating: !!o.mutating, t: game.elapsed });
       game.buildPath.push(o.id);
       applyOption(o);
@@ -12033,6 +12042,7 @@ const BGM_TRACKS = [
     }, 26);
     // close after the pick animation; evolution takes over the screen.
     setTimeout(() => {
+      if (game.choiceToken !== choiceTok) return;
       UI.busy(dom.choiceOverlay, false);
       dom.choiceOverlay.classList.remove('show');
       for (let i = 0; i < dom.choiceCards.length; i++) dom.choiceCards[i].classList.remove('selected');
@@ -12055,6 +12065,7 @@ const BGM_TRACKS = [
         game.choiceCommitting = false;
         UI.end('idle', 'queued-levelup');
         setTimeout(() => {
+          if (game.choiceToken !== choiceTok) return;
           if (game.state === 'fight') openLevelUp();
         }, 320);
       } else {
@@ -12062,7 +12073,13 @@ const BGM_TRACKS = [
         game.selectedOption = -1;
         game.options = [];
         game.choiceCommitting = false;
-        setTimeout(() => { dom.choiceOverlay.classList.add('hidden'); UI.end('idle', 'card-closed'); }, 280);
+        setTimeout(() => {
+          // guard: if a new level-up opened in the meantime, its overlay must
+          // stay visible and its UI state must stay 'selecting'.
+          if (game.choiceToken !== choiceTok || game.state === 'levelup') return;
+          dom.choiceOverlay.classList.add('hidden');
+          UI.end('idle', 'card-closed');
+        }, 280);
       }
     }, 200);
     return true;
@@ -15746,7 +15763,7 @@ const BGM_TRACKS = [
     game.orbBirthTimes = []; game.orbDamageTotal = 0; game.orbShare = 0; game.orbPulseCd = 1.1; game.orbPulseCount = 0;
     game.offeredTotal = 0; game.offeredMutations = 0; game.picks = []; game.buildPath = [];
     game.cardOffers = 0; game.cardArchetypeOffers = 0; game.cardOffersAfterAwaken = 0; game.cardPoolSize = CARD_DB.length; game.maxedFiltered = 0;
-    game.choiceLockUntil = 0; game.choiceCommitting = false; game.schoolPicks = {}; game.schoolOffers = {}; game.buildSchools = {};
+    game.choiceLockUntil = 0; game.choiceCommitting = false; game.choiceToken = 0; game.orphanLevelupT = 0; game.schoolPicks = {}; game.schoolOffers = {}; game.buildSchools = {};
     game.petEvoDone = false; game.redRainCasts = 0; game.redRainArrows = 0;
     game.rainHitTriggers = 0; game.rainBurst = null; game.rainSpawnFrames = []; game.rainRayHits = 0; game.rainRayDmg = 0; game.rainRayCasts = 0; game.blackhole = null; game.bhSqueezeTicks = 0; game.bhSqueezeHits = 0; game.bhCoreNow = 0; game.bhPullNow = 0; game.bhStartMaxD = 0; game.bhStartCount = 0; game.bhFloatCount = 0; game.bhNumCalls = 0; game.bhNumOk = 0; game.redGlowT = 0; game.redEdgeT = 0; game.fuseActive = false; game.fuseConverted = 0;
     game.petDeathLog = []; game.blinks = 0; game.barrageBias = .34; game.debugPets = false;
@@ -18034,6 +18051,24 @@ const BGM_TRACKS = [
       updateParticles(rawDt * .2);
       updateCamera(rawDt);
       drawScene(game.realTime);
+      // Safety net: 'levelup' with no visible card overlay is never a valid
+      // state. It used to happen when a stale close timer hid a newer screen;
+      // recover instead of leaving the whole run silently paused.
+      if (!dom.choiceOverlay.classList.contains('show') && !game.choiceCommitting) {
+        game.orphanLevelupT = (game.orphanLevelupT || 0) + rawDt;
+        if (game.orphanLevelupT > 1.5) {
+          game.orphanLevelupT = 0;
+          game.state = 'fight';
+          game.options = [];
+          game.selectedOption = -1;
+          game.choiceCommitting = false;
+          UI.busy(dom.choiceOverlay, false);
+          UI.end('idle', 'levelup-watchdog');
+          showToast('星轨重连 · 战斗继续', 1600);
+        }
+      } else {
+        game.orphanLevelupT = 0;
+      }
     } else if (game.state === 'evolve') {
       game.evolveT += rawDt;
       updateParticles(rawDt * .5);
